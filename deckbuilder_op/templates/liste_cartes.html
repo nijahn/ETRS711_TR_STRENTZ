@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Liste des Cartes</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .grid-item {
+            background-color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .grid-item:hover {
+            transform: translateY(-5px);
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #333;
+            color: #fff;
+        }
+        .header-container a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            transition: color 0.3s ease-in-out;
+        }
+        .header-container a:hover {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        .nav-item {
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .logout {
+            background-color: #c0392b;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 2px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .logout:hover {
+            background-color: #e74c3c;
+        }
+        #carteModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        #carteDetails {
+            display: flex;
+            flex-direction: column;
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+        #carteDetails img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 10px;
+        }
+        #carteDetails h3, p {
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .close-modal-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 5px 10px;
+            background-color: #444;
+            color: white;
+            cursor: pointer;
+            font-size: 25px;
+            border: none;
+        }
+        .close-modal-btn:hover {
+            background-color: #666;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="nav-item">Accueil</a>
+            <a href="{{ url_for('add_deck_route') }}" class="nav-item">Ajouter Deck</a>
+            <a href="{{ url_for('liste_cartes') }}" class="nav-item">Liste des cartes</a>
+            <a href="{{ url_for('logout') }}" class="nav-item">Déconnexion</a>
+        </div>
+    </header>
+
+    <h2>Liste des Cartes</h2>
+    <div class="grid-container">
+        {% for carte in cartes %}
+            <div class="grid-item">
+                <img src="{{ url_for('static', filename=carte.image_path) }}" alt="{{ carte.nom }}" onclick="getCarteDetails({{ carte.id }})">
+                <p>{{ carte.nom }}</p>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Modal pour les détails de la carte -->
+    <div id="carteModal">
+        <div id="carteDetails"></div>
+        <span onclick="document.getElementById('carteModal').style.display='none'" class="close-modal-btn">&times;</span>
+    </div>
+
+    <script>
+        function getCarteDetails(carteId) {
+            fetch(`/carte_details/${carteId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const detailsDiv = document.getElementById('carteDetails');
+                    detailsDiv.innerHTML = `
+                        <h3>${data.nom}</h3>
+                        <img src="/static/${data.image_path}" alt="${data.nom}">
+                        <p><strong>Couleur</strong>: ${data.couleur}</p>
+                        <p><strong>Coût</strong>: ${data.cout}</p>
+                        <p><strong>Puissance</strong>: ${data.puissance}</p>
+                        <p><strong>Attributs</strong>: ${data.attributs}</p>
+                        <p><strong>Reference</strong>: ${data.reference}</p>
+                        <p><strong>Niveau Counter</strong>: ${data.niveau_counter}</p>
+                        <p><strong>Effet</strong>: ${data.effet}</p>`;
+                    document.getElementById('carteModal').style.display = 'block';
+                });
+        }
+    </script>
+</body>
+</html>

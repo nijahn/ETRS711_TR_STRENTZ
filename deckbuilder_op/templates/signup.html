@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inscription</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='connexion.css') }}">
+</head>
+<body>
+    <h2>Page d'Inscription</h2>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label for="nom">Nom:</label><br>
+        <input type="text" id="nom" name="nom" required><br>
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <label for="motDePasse">Mot de Passe:</label><br>
+        <input type="password" id="motDePasse" name="motDePasse" required><br><br>
+        <input type="submit" value="Inscription">
+    </form>
+    <p>Déjà inscrit? <a href="{{ url_for('login') }}">Se connecter</a></p>
+</body>
+</html>

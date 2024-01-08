@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Simulation de Main</title>
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+.hand-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    perspective: 1000px;
+}
+
+.card {
+    transition: transform 0.5s ease;
+    transform-origin: bottom center;
+    margin: 0 1px;
+    width: 300px;
+    height: auto;
+}
+        .header-container a:hover {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        .nav-item {
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+.card:nth-child(1) { 
+    transform: rotateY(-20deg) translateY(20px);
+}
+.card:nth-child(2) { 
+    transform: rotateY(-10deg) translateY(10px);
+}
+.card:nth-child(3) { 
+    transform: rotateY(0deg);
+}
+.card:nth-child(4) { 
+    transform: rotateY(10deg) translateY(10px);
+}
+.card:nth-child(5) { 
+    transform: rotateY(20deg) translateY(20px);
+}
+
+@media (max-width: 768px) {
+    .hand-container {
+        transform: scale(0.8);
+    }
+    .card {
+        margin: 0 3px;
+    }
+}
+
+        .hand-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+	        margin-left: 200px;
+            margin-bottom: 50px;
+        }
+        .card {
+            margin: 0 10px;
+            transform: rotate(0deg); /* Ajustez l'angle pour chaque carte */
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-20px); /* Animation au survol */
+        }
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #333; /* Dark grey background */
+            color: #fff;
+        }
+        .header-container a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            transition: color 0.3s ease-in-out;
+        }
+        .header-container a:hover {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        .nav-item {
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .logout {
+            background-color: #c0392b;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 2px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .logout:hover {
+            background-color: #e74c3c;
+        }
+        @media (max-width: 768px) {
+            .nav-item {
+                font-size: 0.9rem;
+            }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="nav-item">Accueil</a>
+            <a href="{{ url_for('add_deck_route') }}" class="nav-item">Ajouter Deck</a>
+            <a href="{{ url_for('liste_cartes') }}" class="nav-item">Liste des cartes</a>
+            <a href="{{ url_for('logout') }}" class="nav-item">Déconnexion</a>
+        </div>
+    </header>
+    <div class="hand-container">
+        {% for carte in main_aleatoire %}
+            <img src="{{ url_for('static', filename=carte.image_path) }}" alt="{{ carte.nom }}" class="card">
+        {% endfor %}
+    </div>
+    <button onclick="history.back()">Revenir au deck</button>
+
+    <button onclick="window.location.reload()">Repiocher des cartes</button>
+</body>
+</html>
+

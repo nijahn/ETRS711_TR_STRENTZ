@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Connexion</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='connexion.css') }}">
+</head>
+<body>
+    <h2>Page de Connexion</h2>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br>
+        <label for="motDePasse">Mot de Passe:</label><br>
+        <input type="password" id="motDePasse" name="motDePasse" required><br><br>
+        <input type="submit" value="Connexion">
+    </form>
+    <p>Pas encore inscrit? <a href="{{ url_for('signup') }}">Créer un compte</a></p>
+</body>
+</html>

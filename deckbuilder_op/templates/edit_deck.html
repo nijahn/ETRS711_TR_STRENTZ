@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Modifier le Deck</title>
+    <style>
+        body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* create three equal columns */
+            gap: 10px; /* space between cards */
+            max-width: 1200px;
+            margin: auto;
+        }
+        .grid-item {
+            background-color: #fff;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .grid-item:hover {
+            transform: translateY(-5px);
+        }
+        img {
+            width: 100%; /* make the image responsive */
+            height: auto;
+            border-radius: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #CF4426;
+        }
+        .card-checkbox {
+            display: none; /* Cache la checkbox par défaut */
+        }
+
+        .card-checkbox + label {
+            cursor: pointer;
+            border: 2px solid transparent; /* Préparer l'espace pour le halo */
+            display: inline-block;
+            margin: 10px; /* Espace entre les cartes */
+        }
+
+        .card-checkbox:checked + label {
+            border-color: #000; /* Changez cette valeur pour correspondre à la couleur de la carte */
+            box-shadow: 0 0 10px #000; /* Halo autour de la carte */
+        }
+	.card-label {
+            cursor: pointer;
+            border: 2px solid transparent; /* Préparer l'espace pour le halo */
+            display: inline-block;
+            margin: 10px; /* Espace entre les cartes */
+            transition: box-shadow 0.3s ease;
+	}
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #333; /* Dark grey background */
+            color: #fff;
+        }
+        .header-container a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            transition: color 0.3s ease-in-out;
+        }
+        .header-container a:hover {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        .nav-item {
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .logout {
+            background-color: #c0392b;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 2px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .logout:hover {
+            background-color: #e74c3c;
+        }
+        @media (max-width: 768px) {
+            .nav-item {
+                font-size: 0.9rem;
+            }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="nav-item">Accueil</a>
+            <a href="{{ url_for('add_deck_route') }}" class="nav-item">Ajouter Deck</a>
+            <a href="{{ url_for('logout') }}" class="nav-item">Déconnexion</a>
+        </div>
+    </header>
+    <div style="display: flex; justify-content: center; width: 60%; margin: 0 auto;">
+	    <form method="get" action="{{ url_for('edit_deck', deck_id=deck_id) }}">
+	       <input type="text" name="search" placeholder="Rechercher des cartes...">
+	       <button type="submit">Rechercher</button>
+	    </form>
+    </div>
+	    <h1>Modifier le Deck</h1>
+    <form action="{{ url_for('edit_deck', deck_id=deck_id) }}" method="post">
+        <div>
+           <input type="checkbox" id="est_public" name="est_public" {% if deck.est_public %}checked{% endif %}>
+           <label for="est_public">Rendre ce deck public</label>
+        </div>
+        <div class="grid-container">
+            {% for carte in toutes_les_cartes %}
+                <div class="grid-item">
+                    <input type="checkbox" id="carte_id_{{ carte.id }}" name="carte_id" value="{{ carte.id }}" class="card-checkbox"
+                        {% if carte in cartes_du_deck %} checked {% endif %}>
+                    <label for="carte_id_{{ carte.id }}" class="card-label" style="{{ 'box-shadow: 0 0 10px ' + carte.couleur if carte in cartes_du_deck else '' }}">
+                        <img src="{{ url_for('static', filename=carte.image_path.replace('\\', '/')) }}" alt="Image de {{ carte.nom }}">
+                    </label>
+                    <label for="carte_id_{{ carte.id }}">{{ carte.nom }}</label>
+                    <div>
+                        Nombre d'exemplaires:
+                        <select name="nombre_exemplaires_{{ carte.id }}">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                        </select>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="submit">Mettre à jour le deck</button>
+    </form>
+<form id="delete-deck-form" action="{{ url_for('delete_deck', deck_id=deck.id) }}" method="post" style="display: none;">
+</form>
+<form id="deck-list-form" action="{{ url_for('ajouter_cartes_par_liste', deck_id=deck.id) }}" method="post">
+    <textarea id="deck-list-textarea" name="deck_list" rows="10" cols="50" placeholder="Collez votre liste de deck ici..."></textarea>
+    <button type="button" onclick="validateDeckList()">Valider</button>
+</form>
+<div id="validation-result"></div>
+
+<script>
+function validateDeckList() {
+    var deckListText = document.getElementById('deck-list-textarea').value;
+    var validationResult = document.getElementById('validation-result');
+    
+    var isValid = true;
+    var lines = deckListText.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+        if (!lines[i].match(/^\d+x[a-zA-Z0-9-]+$/)) {
+            isValid = false;
+            break;
+        }
+    }
+
+    if (isValid) {
+        validationResult.innerHTML = "Liste valide.";
+        document.getElementById('deck-list-form').submit(); // Soumet le formulaire
+    } else {
+        validationResult.innerHTML = "Erreur : Format de liste invalide.";
+    }
+}
+</script>
+
+<button type="button" id="delete-deck-button" onclick="confirmDeckDeletion()">Supprimer le Deck</button>
+
+<script>
+function confirmDeckDeletion() {
+    var confirmation = confirm("Êtes-vous sûr de vouloir supprimer ce deck ?");
+    if (confirmation) {
+        // If the user confirmed, submit the form to send a POST request to the server to delete the deck
+        document.getElementById('delete-deck-form').submit();
+    }
+}
+</script>
+</body>
+</html>

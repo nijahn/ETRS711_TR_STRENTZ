@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un Leader</title>
+</head>
+<body>
+    <h1>Ajouter un Leader</h1>
+    <form action="{{ url_for('add_leader') }}" method="post" enctype="multipart/form-data">
+        <input type="text" name="nom" placeholder="Nom" required><br>
+        <input type="text" name="couleur" placeholder="Couleur" required><br>
+        <input type="number" name="puissance" placeholder="Puissance" required><br>
+        <input type="text" name="effet" placeholder="Effet" required><br>
+        <input type="text" name="attributs" placeholder="Attributs" required><br>
+        <input type="number" name="points_de_vie" placeholder="Points de vie" required><br>
+        <input type="text" name="reference" placeholder="Référence" required><br>
+	<input type="file" name="image" accept="image/*">
+        <button type="submit">Ajouter le Leader</button>
+</form>
+
+    </form>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Votre Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <nav>
+            <!-- Liens de navigation -->
+            <a href="{{ url_for('index') }}">Accueil</a>
+            <a href="{{ url_for('add_deck_route') }}">Ajouter Deck</a>
+            <a href="{{ url_for('logout') }}">Déconnexion</a>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Contenu principal -->
+        {% block content %}
+        {% endblock %}
+    </main>
+
+</body>
+</html>
+
+

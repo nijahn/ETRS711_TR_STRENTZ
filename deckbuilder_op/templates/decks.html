@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="fr">
+<style>
+
+
+/* Responsive design pour le logo */
+@media (max-width: 768px) {
+    .site-logo {
+        height: 60px; /* Taille plus petite pour les écrans étroits */
+    }
+}
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: #333; /* Dark grey background */
+            color: #fff;
+        }
+        .header-container a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 15px;
+            transition: color 0.3s ease-in-out;
+        }
+        .header-container a:hover {
+            color: #e74c3c;
+            text-decoration: none;
+        }
+        .nav-item {
+            margin: 0 10px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .logout {
+            background-color: #c0392b;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 2px;
+            transition: background-color 0.3s ease-in-out;
+        }
+        .logout:hover {
+            background-color: #e74c3c;
+        }
+        @media (max-width: 768px) {
+            .nav-item {
+                font-size: 0.9rem;
+            }
+
+</style>
+<head>
+    <meta charset="UTF-8">
+    <title>Votre Application</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="nav-item">Accueil</a>
+            <a href="{{ url_for('add_deck_route') }}" class="nav-item">Ajouter Deck</a>
+            <a href="{{ url_for('liste_cartes') }}" class="nav-item">Liste des cartes</a>
+            <a href="{{ url_for('logout') }}" class="nav-item">Déconnexion</a>
+
+        </div>
+    </header>
+    <main>
+<div style="display: flex; justify-content: center; width: 60%; margin: 0 auto;">
+    <form action="{{ url_for('show_decks') }}" method="get">
+        <input type="text" name="search" placeholder="Recherche par nom ou leader...">
+        <button type="submit">Rechercher</button>
+    </form>
+</div>
+        {% block content %}
+            <h1>Vos Decks</h1>
+            <div class="decks-container">
+                {% for deck_item in decks_user %}
+                    <div class="deck-item">
+                        {% if deck_item.leader.image_path %}
+                            <img src="{{ url_for('static', filename=deck_item.leader.image_path) }}" alt="{{ deck_item.leader.nom }}">
+                        {% endif %}
+                        <a href="{{ url_for('view_deck', deck_id=deck_item.deck.id) }}">{{ deck_item.deck.nom }}</a>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <h2>Decks Publics</h2>
+            <div class="decks-container">
+                {% for deck_item in decks_public %}
+                    <div class="deck-item">
+                        {% if deck_item.leader.image_path %}
+                            <img src="{{ url_for('static', filename=deck_item.leader.image_path) }}" alt="{{ deck_item.leader.nom }}">
+                        {% endif %}
+                        <a href="{{ url_for('view_deck', deck_id=deck_item.deck.id) }}">{{ deck_item.deck.nom }}</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endblock %}
+    </main>
+</body>
+</html>

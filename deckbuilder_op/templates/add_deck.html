@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter un Deck</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f4;
+    }
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background: #333;
+        color: #fff;
+    }
+    .header-container a {
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 15px;
+        transition: color 0.3s ease-in-out;
+    }
+    .header-container a:hover {
+        color: #e74c3c;
+        text-decoration: none;
+    }
+    .nav-item {
+        margin: 0 10px;
+        font-weight: bold;
+        font-size: 1rem;
+    }
+    .logout {
+        background-color: #c0392b;
+        border: none;
+        padding: 8px 15px;
+        border-radius: 2px;
+        transition: background-color 0.3s ease-in-out;
+    }
+    .logout:hover {
+        background-color: #e74c3c;
+    }
+    .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+    }
+    h1 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+    label {
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    input[type="text"],
+    select {
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+    button[type="submit"] {
+        padding: 10px;
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    button[type="submit"]:hover {
+        background-color: #CF4426;
+    }
+</style>
+
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <a href="{{ url_for('index') }}" class="nav-item">Accueil</a>
+            <a href="{{ url_for('add_deck_route') }}" class="nav-item">Ajouter Deck</a>
+            <a href="{{ url_for('liste_cartes') }}" class="nav-item">Liste des cartes</a>
+            <a href="{{ url_for('logout') }}" class="nav-item">Déconnexion</a>
+        </div>
+    </header>
+    <h1>Ajouter un nouveau Deck</h1>
+    <form action="{{ url_for('add_deck_route') }}" method="post">
+        <label for="deck_name">Nom du Deck:</label>
+        <input type="text" id="deck_name" name="deck_name" required><br>
+
+        <label for="colors">Couleurs:</label>
+        <input type="text" id="colors" name="colors" readonly><br>
+
+        <label for="leader_id">Leader:</label>
+        <select name="leader_id" id="leader_id" required>
+            {% for leader in leaders %}
+                <option value="{{ leader.id }}">{{ leader.nom }}</option>
+            {% endfor %}
+        </select><br>
+        <button type="submit">Ajouter le Deck</button>
+    </form>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+       const leaderSelect = document.getElementById('leader_id');
+       leaderSelect.addEventListener('change', function() {
+         const leaderId = this.value;
+         fetch(`/get_leader_color/${leaderId}`)
+            .then(response => response.json())
+            .then(data => {
+                if(data.color) {
+                    document.getElementById('colors').value = data.color;
+                }
+            });
+        });
+      });
+   </script>
+</body>
+</html>

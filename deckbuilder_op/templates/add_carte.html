@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter une Carte</title>
+</head>
+<body>
+    <form action="{{ url_for('add_carte') }}" method="post" enctype="multipart/form-data">
+        <input type="text" name="nom" placeholder="Nom de la carte" required><br>
+        <input type="text" name="couleur" placeholder="Couleur" required><br>
+        <input type="number" name="cout" placeholder="Coût" required><br>
+        <input type="number" name="puissance" placeholder="Puissance" required><br>
+	<input type="text" name="effet" placeholder="Effet" required><br>
+	<input type="number" name="niveau_counter" placeholder="Niveau Counter" required><br>
+        <input type="text" name="attributs" placeholder="Attributs" required><br>
+        <input type="text" name="reference" placeholder="Reference" required><br>
+        <input type="file" name="image" accept="image/*" required><br>
+        <button type="submit">Ajouter la Carte</button>
+    </form>
+</body>
+</html>
